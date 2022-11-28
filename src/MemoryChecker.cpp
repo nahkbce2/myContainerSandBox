@@ -52,7 +52,7 @@ namespace Utilities
 
 #ifndef _MSC_VER
 			long nprocs = getNumberOfCoresOnline();
-
+			std::cout << "no. of cores online: " << nprocs << std::endl;
 			if (nprocs == 0) {
 				// If the number of cores is 0 (i.e. unknown) then we cannot calculate the memory per process.
 				// This is probably only a result of the windows build.
@@ -64,6 +64,7 @@ namespace Utilities
 			struct sysinfo inf;
 
 			sysinfo(&inf);
+			std::cout << "Total RAM in system: " << inf.totalram << std::endl;
 			memoryPerProcess = inf.totalram / nprocs;
 			memoryPerProcess /= ToMegaBytes;
 
@@ -73,9 +74,10 @@ namespace Utilities
 			}
 
 			while (not mc->exitLoop()) {
-
-				if (mc->getMemoryUsed() > memoryPerProcess) {
-					std::cerr << " Basin_Warning: Current memory used in rank "<< rank <<" is " << mc->getMemoryUsed() << " MB, which exceeds the memory per process of " << memoryPerProcess << " MB" << std::endl;
+				auto usd = mc->getMemoryUsed();
+				std::cout << "Memory being used!" << usd << std::endl;
+				if (usd > memoryPerProcess) {
+					std::cerr << " Basin_Warning: Current memory used in rank "<< rank <<" is " << usd << " MB, which exceeds the memory per process of " << memoryPerProcess << " MB" << std::endl;
 				}
 
 				//boost::this_thread::sleep(boost::posix_time::seconds(mc->m_timeBetweenSamples));
